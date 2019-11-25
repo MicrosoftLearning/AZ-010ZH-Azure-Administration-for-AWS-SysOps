@@ -1,10 +1,10 @@
-# Module: 00
-## Lab/Demo: 00
+﻿# 模块：00
+## 实验室/演示：00
 
-Fixes # .
+固定 # 。
 
-Changes proposed in this pull request:
+此申请中提出的更改：
 
--
--
--
+高效
+高效
+高效
