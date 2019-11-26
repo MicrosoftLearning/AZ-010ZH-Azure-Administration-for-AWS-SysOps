@@ -63,7 +63,7 @@ echo "the random string append will be:  "$myRand
 
 
 ```sh
-# set variables
+# 设置变量
 my_resource_group=WestRG
 location=westus
 my_storage_account=weststore$myRand
@@ -106,7 +106,7 @@ export AZURE_STORAGE_CONNECTION_STRING="$(az storage account show-connection-str
 2. 创建存储帐户密钥环境变量
 
 ```sh
-# Display Keys
+# 显示密钥
 az storage account keys list \
     --account-name $AZURE_STORAGE_ACCOUNT \
     --resource-group $my_resource_group \
@@ -125,7 +125,7 @@ $AZURE_STORAGE_ACCOUNT --resource-group $my_resource_group --query [0].value -o 
 1. 制作文件 `helloAdmin.html` 以上传到 Blob 存储
 
 ```sh
-# Make a file to add to the container as a blob
+#制作一个文件作为 Blob 添加到容器中
 echo "<h1>Hello Azure Administrators</h1>">helloAdmin.html
 ```
 
@@ -181,14 +181,14 @@ ls
 1. 创建一个 `upload` 目录
 
 ```sh
-# Create files in uploadfiles directory
+#在 uploadfiles 目录中创建文件
 mkdir uploadfiles
 ```
 
 2. 创建要上传到 `upload` 目录中的文件
 
 ```sh
-# Create Files...
+#创建文件...
 touch uploadfiles/myfile.html
 touch uploadfiles/more.html
 touch uploadfiles/hi.html
@@ -217,7 +217,7 @@ myUploadPath=/home/$az_user_name/uploadfiles
 5. 批量上传文件到容器
 
 ```sh
-# Upload html files in path
+#将 HTML 文件上传到以下路径
 az storage blob upload-batch -d $container_name \
 -s $myUploadPath -o table
 ```
@@ -323,7 +323,7 @@ az storage blob upload \
 > *注意：访问权限配置为仅持续 30 分钟*
 
 ```sh
-# Create a 30 minute read-only SAS token on the container and store as CONTAINER_SAS_KEY
+#在容器上创建一个 30 分钟的只读 SAS 令牌，并将其存储为 CONTAINER_SAS_KEY
 end_date=`date -u -d "30 minutes" '+%Y-%m-%dT%H:%MZ'`
 ```
 

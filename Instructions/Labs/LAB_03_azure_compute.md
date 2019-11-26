@@ -139,7 +139,7 @@ az vm extension set --publisher Microsoft.Compute \
 ```sh
 az vm show -d -g $resourceGroupName -n $vmName --query publicIps -o tsv
 
-# ----Paste above IP address in browser to see if IIS is running----
+#----在浏览器的 IP 地址上方粘贴以查看 IIS 是否正在运行----
 ```
 
 2. 将生成的 IP 地址粘贴到 Web 浏览器中，以验证是否存在 IIS 默认页面。

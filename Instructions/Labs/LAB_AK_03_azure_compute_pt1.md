@@ -3,7 +3,7 @@
 ## 说明
 
 1. 将以下 CLI 脚本复制到记事本等编辑器中
-1. 标题为 `# ----EDIT THESE VALUES Before Running----` 的位置部分
+1. 标题为 `# ----在运行之前编辑这些值----` 的位置部分
 1. 编辑值，使它们代表你的环境，并在本地保存文件
 1. 登录到 azure 门户，打开 bash Cloud Shell
 1. 检查依赖项是否到位（请参阅脚本顶部的注释）
@@ -20,10 +20,10 @@
 #   LAB1-解决方案已到位（已创建 WestRG 和 EastRG）
 #   LAB2-解决方案已到位（已创建 VNets、SubNets 和 Peering）
 # ---------------
-# WARNING: Several Steps take more than 1 minute
-# Be patient and consult instructor if errors are encountered
+# 警告：几个步骤需要花费 1 分钟以上
+# 如果遇到错误，请耐心等待并咨询讲师
 
-# ----------START----------
+# ----------启动----------
 
 # ----在运行之前将这些值编辑为唯一值----
 adminUserName='azuser'
@@ -36,7 +36,7 @@ vmName='WestWinVM'
 vmSize='Standard_D1'
 availabilitySet='WestAS'
 
-# ----Main Scripts----
+#----主要脚本----
 
 # ----创建可用性集----
 az vm availability-set create \
@@ -57,13 +57,13 @@ az vm create --name $vmName --resource-group $resourceGroupName \
 az vm open-port -g WestRG -n $vmName --port 80 --priority 1500
 az vm open-port -g WestRG -n $vmName --port 3389 --priority 2000
 
-# ----Allow ICMPv4-In (Bash CLI running PowerShell)----
+#----允许 ICMPv4-In（运行 PowerShell 的 Bash CLI）----
 az vm extension set --publisher Microsoft.Compute \
 --version 1.8 --name CustomScriptExtension \
 --vm-name $vmName --resource-group $resourceGroupName \
 --settings '{"commandToExecute":"powershell.exe New-NetFirewallRule –DisplayName “Allow ICMPv4-In” –Protocol ICMPv4"}'
 
-# ----Install IIS (Bash CLI running PowerShell)----
+#----安装 IIS（运行 PowerShell 的 Bash CLI）----
 az vm extension set --publisher Microsoft.Compute \
 --version 1.8 \
 --name CustomScriptExtension \
@@ -71,15 +71,15 @@ az vm extension set --publisher Microsoft.Compute \
 --resource-group $resourceGroupName \
 --settings '{"commandToExecute":"powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools"}'
 
-# ----Check the IIS Server is running on VM public IP address----
+#----检查 IIS 服务器是否在 VM 公共 IP 地址上运行----
 az vm show -d -g $resourceGroupName -n $vmName --query publicIps -o tsv
 
 # ***********************************************************
-# Paste above IP address in browser to see if IIS is running
+# 在浏览器的 IP 地址上方粘贴以查看 IIS 是否正在运行
 # ***********************************************************
 
-# ----Create Debian virtual machines configured with DNS----
-# ----Create WestDebianVM----
+#----创建配置有 DNS 的 Debian 虚拟机----
+#----创建 WestDebianVM----
 az vm create \
 --image credativ:Debian:8:latest \
 --admin-username azuser \
@@ -92,10 +92,10 @@ az vm create \
 --name WestDebianVM \
 --generate-ssh-keys
 
-# ----Create EastAS Availability Set----
+#----创建 EastAS 可用性集----
 az vm availability-set create --name EastAS --resource-group EastRG
 
-# ----Create EastDebianVM----
+#----创建 EastDebianVM----
 az vm create \
 --image credativ:Debian:8:latest \
 --admin-username azuser \
@@ -108,24 +108,24 @@ az vm create \
 --name EastDebianVM \
 --generate-ssh-keys
 
-# ----Configure DNS of Debian Machines----
+#----配置 Debian 虚拟机的 DNS----
 myRand=`head /dev/urandom | tr -dc a-z0-9 | head -c 6 ; echo ''`
 echo "the random string append will be:  "$myRand
 
-# ----Configure DNS----
+#----配置 DNS----
 az network public-ip update --resource-group WestRG --name WestDebianVMPublicIP --dns-name westdebianvm$myRand
 
 az network public-ip update --resource-group EastRG --name EastDebianVMPublicIP --dns-name eastdebianvm$myRand
 
-# ----Ensure both Debian VMs are running----
+#----确保两个 Debian VM 都在运行----
 az vm get-instance-view --name WestDebianVM --resource-group WestRG --query instanceView.statuses[1] --output table
 
 az vm get-instance-view --name EastDebianVM --resource-group EastRG --query instanceView.statuses[1] --output table
 
-# ----Connect to WestDebianVM with SSH and ping test WestWinVM----
-# ----Connect to the Debian virtual machine in WestRG----
+#----使用 SSH 连接到 WestDebianVM 并对 WestWinVM 进行 ping 测试----
+#----连接到 WestRG 中的 Debian 虚拟机----
 
-# ----get Public and Private IP Addresses of the VMs----
+#----获取 VM 的公共和私有 IP 地址----
 WestDebianIP=$(az vm list-ip-addresses -n WestDebianVM --query "[*].virtualMachine.network.publicIpAddresses[0].ipAddress" -o tsv)
 
 EastDebianIP=$(az vm list-ip-addresses -n EastDebianVM --query "[*].virtualMachine.network.publicIpAddresses[0].ipAddress" -o tsv)
@@ -135,16 +135,16 @@ WestWinIP=$(az vm list-ip-addresses -n WestWinVM --query "[*].virtualMachine.net
 #----SSH into the WestDebianVM virtual machine----
 
 # *******************************************
-# To Start SSH Session use the command below
+#要启动 SSH 会话，请使用下面的命令
 echo "For SSH to WestDebianVM use: " 'ssh' $adminUserName'@'$WestDebianIP
 echo "EastDebianVM IP: " $EastDebianIP
 echo "WestWinVM IP: " $WestWinIP
 # *******************************************
 
 # *******************************************
-# --------Start SSH Session Commands--------
-# --See Lab 03 Exercise 1 Task 4: Ping VMs--
-# --Note above SSH connection and IP values--
+#--------启动 SSH 会话命令--------
+#--请参阅实验室 03 练习 1 任务4：Ping VMs--
+#--注意上面的 SSH 连接和 IP 值--
 # *******************************************
 ```
 

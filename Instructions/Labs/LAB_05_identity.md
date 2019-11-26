@@ -61,7 +61,7 @@ az account list --output table
 1. 在 **Cloud Shell** 命令提示符，在“**your desired subscriptionID**”中键入以下命令，然后按 **Enter** 设置默认订阅。
 
 ```bash
-# replace --subcription value with your subscription ID or subscription name
+# 用你的订阅 ID 或订阅名称替换 --subcription 值
 az account set --subscription [1111a1a1-22bb-3c33-d44d-e5e555ee5eee]
 az account list --output table
 ```

@@ -3,7 +3,7 @@
 ## 说明
 
 1. 将以下 CLI 脚本复制到记事本等编辑器中
-1. 标题为 `# ----EDIT THESE VALUES Before Running----` 的位置部分
+1. 标题为 `# ----在运行之前编辑这些值----` 的位置部分
 1. 编辑值，使它们代表你的环境，并在本地保存文件
 1. 登录到 azure 门户，打开 bash Cloud Shell
 1. 从本地文件复制 CLI 脚本并将脚本粘贴到 Bash Cloud Shell 中
