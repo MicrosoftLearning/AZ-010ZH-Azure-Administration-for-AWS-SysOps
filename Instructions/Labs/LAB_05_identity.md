@@ -1,7 +1,7 @@
 ﻿---
 lab:
     title: '创建用户和组、策略和监控'
-    module: '模块 5：Azure 标识'
+    module: '模块 5：Azure 身份识别'
 ---
 
 # 实验室 01：Azure 身份识别
