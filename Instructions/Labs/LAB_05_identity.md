@@ -1,12 +1,12 @@
 ﻿---
 lab:
-    title: '创建用户和组、策略和监控'
+    title: '创建用户、组和策略。监视日志和警报。'
     module: '模块 5：Azure 身份识别'
 ---
 
 # 实验室 01：Azure 身份识别
 
-创建用户和组、策略和监控
+创建用户、组和策略以及监视日志和警报
 
 ## 学生实验室手册
 
@@ -18,13 +18,13 @@ lab:
 
 完成本实验室后，你将能够：
 
-* 创建并配置用户和组
+* 使用 Azure 基于角色的访问控制创建和配置用户和组
 * 创建限制软件安装的策略
 * 使用 Query Explorer 在 Azure 门户中查看监控日志和警报
 
 ## 实验室设置
 
-* **预计用时**：20 分钟
+* **预计用时**：45 分钟
 
 ## 说明
 
@@ -32,72 +32,155 @@ lab:
 
 #### 设置任务
 
-1. 按照课程讲师提供的步骤，使用 Azure 门户配置将用于本课程的 Azure 帐户。
+1. 配置将用于本课程的 Azure 帐户。
+2. **模块 1: Azure 管理，实验室： 创建资源组** 已配置 WestRG 资源组。
 
-### 练习 1：在使用 Cloud Shell 的 Azure CLI 中开始，创建 2 个资源组
+### 练习 1：创建用户、组和策略
 
 本练习的主要任务如下：
 
 1. 添加用户和组
 1. 创建限制软件安装的策略
-1. 查看监控日志和警报
 
-#### 任务 1：打开 Cloud Shell
+#### 练习 1 - 任务 1：打开 Cloud Shell
 
-**在 Azure Cloud Shell 中设置订阅**
+**사용자 추가**
 
-1. 在门户顶部，单击“**Cloud Shell**”图标以打开“Cloud Shell”窗格。
+1. 사용자 도메인용 변수를 만듭니다.
 
-1. 在“Cloud Shell”界面中，选择“**Bash**”。
+> 이메일 주소 eric@contoso.com을 사용하면 명령이 `my_domain=ericcontoso.onmicrosoft.com`이 됩니다.
+>
+> * *필요한 경우 강사에게 문의하세요.*
 
-1. 在 **Cloud Shell** 命令提示符，键入以下命令，然后按 **Enter** 列出与用于门户登录的帐户关联的所有订阅。
+2. 사용자 도메인용 변수를 편집합니다.
 
-```bash
-az account list --output table
+```sh
+# 사용자 도메인용 변수 만들기
+# user@contoso.com =>  usercontoso.onmicrosoft.com
+
+my_domain=<email+service>.onmicrosoft.com
 ```
 
-1. 查看订阅列表，确认是否有订阅被标记为 "default `true`"
-1. 如果没有为你所需的订阅设置默认值，请重置默认订阅
-1. 在 **Cloud Shell** 命令提示符，在“**your desired subscriptionID**”中键入以下命令，然后按 **Enter** 设置默认订阅。
+**사용자 계정 만들기**
 
-```bash
-# 用你的订阅 ID 或订阅名称替换 --subcription 值
-az account set --subscription [1111a1a1-22bb-3c33-d44d-e5e555ee5eee]
-az account list --output table
+1. 사용자 계정 이름을 만듭니다.
+
+```sh
+my_user_account=AZ010@$my_domain
 ```
 
-4. 查看订阅列表，并确保将正确的订阅被标记为 "default `true`"
+2. 강력한 고유 암호를 만듭니다(암호 편집).
 
-#### 任务 2：使用 CLI 创建 WestRG 资源组
-
-1. 在 **Cloud Shell** 命令提示符下，键入以下命令，创建位于美国西部区域的 WestRG 资源组。
-
-```bash
-az group create --location westus --name WestRG --output table
+```sh
+# 암호를 고유한 암호로 편집합니다. 이때 선행 "!"를 제거하지 않으면 오류가 발생합니다.
+az ad user create \
+    --display-name AZ010Tester \
+    --password !sTR0ngP@ssWorD543%* \
+    --user-principal-name $my_user_account
 ```
 
-2. 在 **Cloud Shell** 命令提示符下，键入以下命令，列出美国西部区域可用的资源组。
+3. 표시 이름, 암호 및 사용자 주체 이름을 기록해 둡니다.
 
-```bash
-az group list --output table
+**사용자 및 그룹 관리**
+
+1. AD 사용자 목록을 표시합니다.
+
+```sh
+az ad user list --output json | jq '.[] | {"userPrincipalName":.userPrincipalName, "objectId":.objectId}'
 ```
 
-3. 验证列出了新创建的 WestRG
+2. 이전 단계에서 만든 사용자가 나열되어야 합니다.
+3. 모든 역할 할당 목록을 표시합니다.
 
-#### 任务 3：使用 CLI 创建 EastRG 资源组
-
-1. 在 **Cloud Shell** 命令提示符下，键入以下命令，创建位于美国东部区域的 EastRG 资源组。
-
-```bash
-az group create --location eastus --name EastRG --output table
+```sh
+az role assignment list --all -o table
 ```
 
-2. 在 **Cloud Shell** 命令提示符下，键入以下命令，列出美国东部区域可用的资源组。
+4. 이 목록의 초기 상태를 기록해 둡니다.
+5. 리소스 그룹용 역할 할당 목록을 표시합니다.
 
-```bash
-az group list --output table
+```sh
+az role assignment list --resource-group WestRG --output json | jq '.[] | {"principalName":.principalName, "roleDefinitionName":.roleDefinitionName, "scope":.scope}'
 ```
 
-3. 验证是否列出了新创建的 EastRG
+6. 새 사용자에게 역할("소유자")을 추가합니다.
 
-> **结果**：在本实验中，你已经配置了默认的 Azure 订阅，并创建了两个资源组，我们将在随后的实验中进一步使用它们。
+```sh
+az role assignment create --role "Owner" --assignee $my_user_account --resource-group WestRG
+
+#az role assignment create --role "Owner" --assignee <할당 대상 개체 ID> --resource-group <리소스 그룹>
+```
+
+**사용자 및 그룹의 변경 내용 검토**
+
+1. 리소스 그룹용 역할 할당 목록을 다시 표시합니다(변경 사항 확인).
+
+```sh
+az role assignment list --resource-group WestRG --output json | jq '.[] | {"principalName":.principalName, "roleDefinitionName":.roleDefinitionName, "scope":.scope}'
+```
+
+2. 만든 사용자에 대한 역할 할당 목록을 표시합니다(변경 사항 확인).
+
+```sh
+az role assignment list --assignee $my_user_account -g WestRG #--output json | jq '.[] | {"principalName":.principalName, "roleDefinitionName":.roleDefinitionName, "scope":.scope}'
+```
+
+## 작업 2 – 소프트웨어 설치를 제한하는 정책 만들기
+
+**소프트웨어 제한 정책 배포**
+
+> *[Github](https://github.com/Azure/azure-policy/tree/master/samples/built-in-policy/require-sqlserver-version12)에서 아래 스크립트에 사용되는 rules.json 및 parameters.json을 검토합니다.*
+
+1. 정책 정의를 만듭니다.
+
+```sh
+az policy definition create --name 'require-sqlserver-version12' \
+    --display-name 'Require SQL Server version 12.0' \
+    --description 'This policy ensures all SQL servers use version 12.0.' \
+    --rules 'https://raw.githubusercontent.com/Azure/azure-policy/master/samples/built-in-policy/require-sqlserver-version12/azurepolicy.rules.json' \
+    --params 'https://raw.githubusercontent.com/Azure/azure-policy/master/samples/built-in-policy/require-sqlserver-version12/azurepolicy.parameters.json' \
+    --mode All
+```
+
+2. 구독 수준에서 범위를 지정합니다.
+
+```sh
+az policy assignment create --name SQL12AZ010 \
+    --display-name 'Require SQL Server version 12.0 - subscription scope' \
+    --scope '/subscriptions/'$subscriptionID \
+    --policy 'require-sqlserver-version12'
+```
+
+3. 정책 할당 목록을 표시합니다.
+
+```sh
+az policy assignment list
+```
+
+4. 새로 만든 정책을 표시합니다.
+
+```sh
+az policy assignment show --name 'SQL12AZ010'
+```
+
+**규정 준수 여부 확인**
+
+1. Azure Policy 서비스 페이지로 돌아갑니다.
+2. 규정 준수를 선택합니다. 규정 준수 상태 필터를 "모든 준수 상태"로 설정합니다.
+3. 정책 및 정의 상태를 검토합니다.
+## 연습 2: 쿼리 탐색기를 통해 로그 및 경고 모니터링
+
+1. 로그 및 경고 모니터링
+
+### 연습 2 - 작업 1 – 모니터링 로그 및 경고 검토
+
+**데모 환경 액세스**
+
+1. 새 브라우저 탭에서 [로그 분석 쿼리 데모](https://portal.loganalytics.io/demo)로 이동합니다.
+2. 쿼리 탐색기 사용
+    1. 오른쪽 위의 쿼리 탐색기를 선택합니다.
+    2. 즐겨찾기를 확장한 다음 *오류가 있는 모든 Syslog 레코드*를 선택합니다.
+    3. 쿼리가 편집 창에 추가됩니다. 쿼리의 구조를 확인합니다.
+    4. 쿼리를 실행합니다. 반환된 레코드를 살펴봅니다.
+    5. 강사의 추가 단계를 따릅니다.
+    6. 시간이 되면 다른 즐겨찾기와 저장된 쿼리도 사용해 봅니다.

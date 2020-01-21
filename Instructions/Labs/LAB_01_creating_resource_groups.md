@@ -33,7 +33,7 @@ Azure Cloud Shell CLI 简介
 
 1. 按照课程讲师提供的步骤，使用 Azure 门户配置将用于本课程的 Azure 帐户。
 
-### 练习 1：在使用 Cloud Shell 的 Azure CLI 中开始，创建 2 个资源组
+## 练习 1：在使用 Cloud Shell 的 Azure CLI 中开始，创建 2 个资源组
 
 本练习的主要任务如下：
 
@@ -42,7 +42,7 @@ Azure Cloud Shell CLI 简介
 1. 使用 CLI 命令创建 WestRG 资源组
 1. 使用 CLI 命令创建 EastRG 资源组
 
-#### 任务 1：打开 Cloud Shell
+### 练习 1 - 任务 1：打开 Cloud Shell
 
 **在 Azure Cloud Shell 中设置订阅**
 
@@ -68,7 +68,7 @@ az account list --output table
 
 4. 查看订阅列表，并确保将正确的订阅被标记为 "default `true`"
 
-#### 任务 2：使用 CLI 创建 WestRG 资源组
+### 任务 2：使用 CLI 创建 WestRG 资源组
 
 1. 在 **Cloud Shell** 命令提示符下，键入以下命令，创建位于美国西部区域的 WestRG 资源组。
 
@@ -84,7 +84,7 @@ az group list --output table
 
 3. 验证列出了新创建的 WestRG
 
-#### 任务 3：使用 CLI 创建 EastRG 资源组
+### 任务 3：使用 CLI 创建 EastRG 资源组
 
 1. 在 **Cloud Shell** 命令提示符下，键入以下命令，创建位于美国东部区域的 EastRG 资源组。
 

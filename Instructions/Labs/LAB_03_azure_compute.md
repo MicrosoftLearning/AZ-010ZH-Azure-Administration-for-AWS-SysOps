@@ -34,7 +34,7 @@ lab:
     1. 模块 1：Azure 管理 - **实验室：创建资源组**。已配置 EastRG 和 WestRG 资源组。
     1. 模块 2：Azure 网络 - **实验室：虚拟网络和对等互连**。已配置具有子网和对等互连的 VNet。
 
-### 练习 1：创建在可用性集内配置的 VM
+## 练习 1：创建在可用性集内配置的 VM
 
 本练习的主要任务如下：
 
@@ -42,7 +42,7 @@ lab:
 1. 创建 Windows 虚拟机
 1. 创建 Linux Debian 虚拟机
 
-#### 任务 1：创建 Windows 虚拟机
+### 练习 1 - 任务 1：创建 Windows 虚拟机
 
 * 创建可用性集
 * 创建 Windows Server 2016 DataCenter VM
@@ -52,13 +52,13 @@ lab:
 
 1. 在 **Cloud Shell** 命令提示符中，键入以下命令，然后按 **Enter** 准备在以下脚本中使用的变量。
 
-> **注意**：创建一个唯一密码并将其写下来
+> **注意**：创建一个唯一密码并将其写下来 （删除密码前的“！”开头，否则会出现错误）
 
 ```sh
 resourceGroupName='WestRG'
 location='westus'
 adminUserName='azuser'
-adminPassword='UniqueP@$$w0rd-Here' # make unique
+adminPassword=!'UniqueP@$$w0rd-Here' # remove "!" or error + make unique
 vmName='WestWinVM'
 vmSize='Standard_D1'
 availabilitySet='WestAS'
@@ -104,7 +104,7 @@ az vm open-port -g WestRG -n $vmName --port 3389 --priority 2000
 2. 注意资源，包括 WestWinVM
 3. 启动 Azure 顾问并注意建议
 
-#### 任务 2：将 WestWinVM 配置为 Web 服务器并允许 Ping
+### 任务 2：将 WestWinVM 配置为 Web 服务器并允许 Ping
 
 **允许 ICMPv4-In（运行 PowerShell 的 Bash CLI）**
 
@@ -144,7 +144,7 @@ az vm show -d -g $resourceGroupName -n $vmName --query publicIps -o tsv
 
 2. 将生成的 IP 地址粘贴到 Web 浏览器中，以验证是否存在 IIS 默认页面。
 
-#### 任务 3：创建配置有 DNS 的 Debian 虚拟机
+### 任务 3：创建配置有 DNS 的 Debian 虚拟机
 
 在 Cloud Shell 中创建两个 Debian 虚拟服务器并通过 SSH 连接到服务器
 
@@ -201,7 +201,6 @@ az vm availability-set create --name EastAS --resource-group EastRG
 ```sh
 az vm create \
 --image credativ:Debian:8:latest \
---size 'Standard_D1' \
 --admin-username azuser \
 --resource-group EastRG \
 --vnet-name EastVNet \
@@ -243,7 +242,7 @@ az vm get-instance-view --name WestDebianVM --resource-group WestRG --query inst
 az vm get-instance-view --name EastDebianVM --resource-group EastRG --query instanceView.statuses[1] --output table
 ```
 
-#### 任务 4：使用 SSH 连接到 WestDebianVM 并对 WestWinVM 进行 ping 测试
+### 任务 4：使用 SSH 连接到 WestDebianVM 并对 WestWinVM 进行 ping 测试
 
 **连接到 West 资源组中的 Debian 虚拟机**
 
@@ -270,6 +269,7 @@ ssh azuser@<PUBLIC IP address of West Debian VM>
 > *由于两个都位于同一个 **专用** VNet 上，此操作应当有效*
 
 1. 使用 WestWinVM IP 地址编辑以下命令，然后在 Cloud Shell SSH 会话中键入以对 WestWinVM 进行 ping 处理。
+1. **`ctrl+c`** 在 bash 中结束 ping（ssh 会话）
 
 ```sh
 ping <PRIVATE IP address of the Windows server>
@@ -278,6 +278,7 @@ ping <PRIVATE IP address of the Windows server>
 **Ping EastDebianVM**
 
 1. 使用 EastDebianVM IP 地址编辑以下命令，然后在 Cloud Shell SSH 会话中键入以对 WestWinVM 进行 ping 处理。
+2. **`ctrl+c`** 在 bash 中结束 ping（ssh 会话）
 
 > *由于先前配置的 VNet 对等互连，此操作应该有效*
 
@@ -295,7 +296,7 @@ ping <PRIVATE IP address of eastdebianvm>
 1. 创建自动扩展和自动缩小规则
 1. 测试 Ubuntu 规模集（可选）
 
-#### 任务 1：创建 Ubuntu 规模集
+#### 练习 2 - 任务 1：创建 Ubuntu 规模集
 
 **创建规模集资源组**
 
@@ -369,7 +370,7 @@ az monitor autoscale rule create \
 
 > *注意：“缩小”可能会在短短 2 分钟内发生，因此以下结果在最初的几分钟内将会有所不同*
 
-#### 任务 2：测试 Ubuntu 规模集（可选任务）
+### 任务 2：测试 Ubuntu 规模集（可选任务）
 
 > 此任务将在服务器上生成 CPU 符合，作为演示规模集行为的测试。
 

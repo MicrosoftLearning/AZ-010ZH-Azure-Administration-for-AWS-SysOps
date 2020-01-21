@@ -3,8 +3,9 @@
 ## 说明
 
 1. 将以下 CLI 脚本复制到记事本等编辑器中
-1. 标题为 `# ----在运行之前编辑这些值----` 的位置部分
-1. 编辑值，使它们代表你的环境，并在本地保存文件
+      1. 标题为 `# ----在运行之前编辑这些值----` 的位置部分
+      1. 编辑密码，否则将导致**错误**，然后保存 CLI 命令文件
+      1. 本地保存文件
 1. 登录到 azure 门户，打开 bash Cloud Shell
 1. 检查依赖项是否到位（请参阅脚本顶部的注释）
 1. 从本地文件复制 CLI 脚本并将脚本粘贴到 Bash Cloud Shell 中
@@ -26,10 +27,11 @@
 # ----------启动----------
 
 # ----在运行之前将这些值编辑为唯一值----
-adminUserName='azuser'
-adminPassword='UniqueP@$$w0rd-Here'
+#----删除密码的前导“!”，否则会出现错误----
+adminPassword=!'UniqueP@$$w0rd-Here'
 
 # ----设置变量----
+adminUserName='azuser'
 resourceGroupName='WestRG'
 location='westus'
 vmName='WestWinVM'
@@ -52,6 +54,9 @@ az vm create --name $vmName --resource-group $resourceGroupName \
   --location $location \
   --size $vmSize \
   --availability-set $availabilitySet
+  
+# 等待 VM 一分钟
+睡眠 60 秒
 
 # ----打开端口----
 az vm open-port -g WestRG -n $vmName --port 80 --priority 1500

@@ -31,7 +31,7 @@ lab:
 
 1. 已在 **模块 1** 中配置 EastRG 和 WestRG 资源组：**Azure 管理，实验室：创建资源组**。
 
-### 练习 1：创建带有子网的虚拟网络
+## 练习 1：创建带有子网的虚拟网络
 
 本练习的主要任务如下：
 
@@ -40,7 +40,7 @@ lab:
 1. 创建具有子网的 East VNet。
 1. 验证是否创建了 East 网络和子网。
 
-#### 任务 1 创建具有子网的 West VNet
+### 练习 1 - 任务 1 创建具有子网的 West VNet
 
 1. 在 **Cloud Shell** 命令提示符下，键入以下命令，以使用 WestSubNet1 子网创建 WestVNet 虚拟网络。
 
@@ -65,7 +65,7 @@ az network vnet list --output table
 az network vnet subnet list --resource-group WestRG --vnet-name WestVNet --output table
 ```
 
-#### 任务 2 创建具有子网的 East VNet
+### 任务 2 创建具有子网的 East VNet
 
 1. 在 **Cloud Shell** 命令提示符下，键入以下命令，以使用 EastSubNet1 子网创建 EastVNet 虚拟网络。
 
@@ -101,7 +101,7 @@ az network vnet list --output table
 az network vnet subnet list --resource-group EastRG --vnet-name EastVNet --output table
 ```
 
-#### 任务 3：创建从 West 到 East 的对等互连网络
+### 任务 3：创建从 West 到 East 的对等互连网络
 
 1. 使用 `remote-vnet-id` CLI 命令在 West 和 East VNet 之间创建对等互连
 1. 在 **Cloud Shell** 在命令提示符下，键入以下命令以在变量中捕获 EastVNet ID。
@@ -137,7 +137,7 @@ az network vnet peering list \
   --output table
   ```
 
-#### 任务 4：创建从 East 到 West 的对等互连网络
+### 任务 4：创建从 East 到 West 的对等互连网络
 
 1. 在变量中捕获 WestVNet ID
 
