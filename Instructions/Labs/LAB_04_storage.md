@@ -363,40 +363,40 @@ private_URI="$(az storage blob generate-sas \
 echo $private_URI
 ```
 
-5. 이전 단계에서 생성된 URI 링크를 테스트하여 작동하는지 확인
+5. 测试上一步中生成的 URI 链接，以确保其正常工作
 
-### 작업 3: 서브넷 서비스 엔드포인트 만들기
+### 任务 3：创建一个子网服务终结点
 
-**스토리지 계정의 기본 규칙 상태 표시**
+**显示存储帐户默认规则的状态**
 
-1. 다음 CLI 명령을 입력하여 스토리지 계정에 대한 기본 규칙의 상태를 표시합니다.
+1. 键入以下 CLI 命令，显示存储帐户默认规则的状态。
 
 ```sh
 az storage account show --resource-group $my_resource_group \
     -n $AZURE_STORAGE_ACCOUNT --query networkRuleSet.defaultAction
 ```
 
-**필요한 경우 네트워크 액세스를 기본적으로 거부하도록 기본 규칙 설정**
+**将默认规则设置为默认情况下拒绝网络访问（如果需要）**
 
-1. 규칙이 현재 'Allow'로 설정된 경우 'Deny'로 설정
+1. 如果当前设置为 `Allow`，请将规则设置为 `Deny`
 
 ```sh
 az storage account update --resource-group $my_resource_group \
     -n $AZURE_STORAGE_ACCOUNT --default-action Deny
 ```
 
-**스토리지 계정 네트워크 규칙 목록 표시**
+**列出存储帐户网络规则**
 
-1. 네트워크 규칙 목록을 표시한 다음 검토합니다.
+1. 显示，然后查看网络规则列表。
 
 ```sh
 az storage account network-rule list --resource-group $my_resource_group \
     -n $AZURE_STORAGE_ACCOUNT
 ```
 
-**기존 VNet(WestVNet) 및 서브넷(WestSubnet1)에서 Azure Storage용 서비스 엔드포인트를 사용하도록 설정**
+**在现有 vnet (WestVNet) 和子网 (WestSubnet1) 上启用 Azure 存储的服务终结点**
 
-1. 서브넷 규칙을 업데이트하여 WestVNet - WestSubnet1에서 스토리지를 사용하도록 설정합니다.
+1. 更新子网规则以在 WestVNet - WestSubnet1 上启用存储。
 
 ```sh
 az network vnet subnet update --resource-group $my_resource_group \
@@ -404,11 +404,11 @@ az network vnet subnet update --resource-group $my_resource_group \
     --service-endpoints "Microsoft.Storage"
 ```
 
-**가상 네트워크 및 서브넷용 네트워크 규칙 추가**
+**为虚拟网络和子网添加网络规则**
 
-> **참고**: 네트워크 액세스를 거부하도록 기본 규칙을 설정해야 합니다. 이렇게 하지 않으면 네트워크 규칙이 적용되지 않습니다.
+> **注意**：必须将默认规则设置为“拒绝”，否则网络规则无效。
 
-1. 'subnet_id' 변수 만들기
+1. 创建 `subnet_id` 变量
 
 ```sh
 subnet_id="$(az network vnet subnet show \
@@ -417,51 +417,51 @@ subnet_id="$(az network vnet subnet show \
     --query id --output tsv)"
 ```
 
-2. 네트워크 서브넷 규칙을 추가합니다.
+2. 添加网络子网规则。
 
 ```sh
 az storage account network-rule add --resource-group $my_resource_group \
     -n $AZURE_STORAGE_ACCOUNT --subnet $subnet_id
 ```
 
-**스토리지 계정 네트워크 규칙 업데이트 목록 표시**
+**列出存储帐户网络规则更新**
 
-1. 네트워크 규칙 목록을 표시하고 다시 검토합니다.
+1. 显示并再次查看网络规则列表。
 
 ```sh
 az storage account network-rule list --resource-group $my_resource_group \
     -n $AZURE_STORAGE_ACCOUNT
 ```
 
-**이전 태스크에서 액세스할 수 있었던 페이지 테스트(네트워크 규칙이 액세스를 거부해야 함)**
+**测试上一个任务中可访问的页面 – 网络规则应拒绝访问**
 
-1. 테스트할 링크를 클릭합니다.
-2. 결과는 "access denied"가 되어야 합니다.
+1. 单击链接进行测试。
+2. 结果应为“拒绝访问”。
 
 ```sh
 echo $private_URI
 ```
 
-**스토리지 계정(west) 정리**
+**清理存储帐户 (west)**
 
-1. 검토가 완료되면 스토리지 계정 리소스 제거
+1. 完成检查后，删除存储帐户资源
 
 ```sh
 az storage account delete -n $my_storage_account -g my_resource_group
 ```
 
-### 태스크 4 – File Storage 만들기
+### 任务 4 – 创建文件存储
 
-**Azure CLI를 사용하여 eastus 스토리지 계정 만들기**
+**使用 Azure CLI 创建 eastus 存储帐户**
 
-1. 고유한 이름에 사용할 임의 문자열 생성(여전히 메모리에 있지 않은 경우)
+1. 创建随机字符串供唯一名称使用（如果内存中还没有）
 
 ```sh
 myRand=`head /dev/urandom | tr -dc a-z0-9 | head -c 6 ; echo ''`
-echo "추가되는 임의 문자열:  "$myRand
+echo "the random string append will be:  "$myRand
 ```
 
-2. 변수 만들기
+2. 创建变量
 
 ```sh
 my_resource_group=EastRG
@@ -469,7 +469,7 @@ location=eastus
 my_storage_account=eaststore$myRand
 ```
 
-3. eastus 스토리지 계정 만들기
+3. 创建 eastus 存储帐户
 
 ```sh
 az storage account create --name $my_storage_account \
@@ -477,22 +477,22 @@ az storage account create --name $my_storage_account \
     --sku Standard_LRS --kind StorageV2
 ```
 
-4. https가 아닌 트래픽 허용(그러면 Linux 드라이브 탑재 시 "오류 13"이 발생하지 않음)
+4. allow non-https traffic (avoids "error 13"  mounting Linux drive)
 
 ```sh
 az storage account update -n $my_storage_account --https-only false
 ```
 
-5. 스토리지 계정 목록 표시
-6. 새로 만든 계정 확인
+5. 列出存储帐户
+6. 注意新创建的帐户
 
 ```sh
 az storage account list -o table
 ```
 
-**파일 공유 만들기 및 파일 업로드**
+**创建文件共享并上传文件**
 
-1. 환경 변수 설정
+1. 设置环境变量
 
 ```sh
 export AZURE_STORAGE_ACCOUNT=$my_storage_account
@@ -500,7 +500,7 @@ export AZURE_STORAGE_KEY="$(az storage account keys list --account-name $AZURE_S
 export AZURE_STORAGE_CONNECTION_STRING="$(az storage account show-connection-string -n $AZURE_STORAGE_ACCOUNT -g $my_resource_group --query connectionString -o tsv)"
 ```
 
-2. 'eastfiles' 파일 공유 만들기
+2. 创建 `eastfiles` 文件共享
 
 ```sh
 file_share_name=eastfiles
@@ -508,28 +508,28 @@ file_share_name=eastfiles
 az storage share create --name $file_share_name --quota 2048
 ```
 
-3. 업로드할 'myFileShareFile.html' 파일 만들기
+3. 创建要上传的 `myFileShareFile.html` 文件
 
 ```sh
 echo "File Shares Share Files">myFileShareFile.html
 ```
 
-4. 공유할 파일 업로드
+4. 上传文件以共享
 
 ```sh
 az storage file upload --share-name $file_share_name --source ~/myFileShareFile.html
 ```
 
-5. Azure File Storage에 있는 파일의 출력 목록
-6. 이제 'myFileShareFile.html'이 File Storage에 있음
+5. Azure 文件存储中文件的输出列表
+6. 注意 `myFileShareFile.html` 现在位于文件存储中
 
 ```sh
 az storage file list --share-name $file_share_name -o table
 ```
 
-**Linux 가상 머신에서 파일 공유 탑재**
+**从 Linux 虚拟机装载文件共享**
 
-1. Linux VM으로의 SSH 실행
+1. 通过 SSH 连接到 Linux VM
 
 ```sh
 east_vm_ip="$(az vm show -d -g $my_resource_group -n eastdebianvm --query publicIps -o tsv)"
@@ -537,15 +537,15 @@ east_vm_ip="$(az vm show -d -g $my_resource_group -n eastdebianvm --query public
 ssh azuser@$east_vm_ip
 ```
 
-> 참고: VM SSH 세션에서 스토리지 연결 준비를 위한 명령 실행
+> 注意：在 VM SSH 会话中运行命令以准备进行存储连接
 
-2. Linux VM에 eastfiles용 디렉터리 만들기
+2. 在 Linux VM 上为 eastfiles 创建目录
 
 ```sh
 mkdir -p $my_storage_account/eastfiles
 ```
 
-3. Linux VM에 cifs-utils 설치
+3. 在 Linux VM 上安装 cifs-utils
 
 ```sh
 sudo apt-get update
@@ -553,18 +553,18 @@ sudo apt-get update
 sudo apt-get install cifs-utils
 ```
 
-4. 포털에서 코드를 가져와 Linux 컴퓨터에 스토리지 연결
+4. 从门户获取代码以将存储连接到 Linux 计算机
 
-    1. Portal에서 다음 단계를 수행합니다.
-        * eaststorage*123af4* 또는 비슷한 이름의 스토리지 계정을 엽니다.
-        * eastfiles 파일 공유로 이동합니다.
-    1. "eastfiles" 블레이드에서 연결을 클릭합니다.
-    1. **Linux** 탭으로 변경해 연결 문자열을 복사합니다.
-    1. EastDebianVM ssh 세션으로 돌아옵니다.
-    1. ssh 세션에서 연결 문자열을 붙여 넣습니다.
+    1. 在门户中：
+        * 打开你的 eaststorage*123af4*（类似名称）存储帐户。
+        * 导航到 eastfiles 文件共享。
+    1. 在“eastfiles”边栏选项卡中，单击“连接”。
+    1. 切换到 **Linux** 选项卡并复制连接字符串。
+    1. 返回你的 EastDebianVM ssh 会话。
+    1. 将连接字符串粘贴到 ssh 会话中
 
 > ```sh
-> # 포털의 연결 문자열은 다음과 유사합니다.
+> # 来自门户的连接字符串将类似于以下内容
 > sudo mkdir /mnt/eaststorage123af4
 > if [ ! -d "/etc/smbcredentials" ]; then
 > sudo mkdir /etc/smbcredentials
@@ -580,51 +580,51 @@ sudo apt-get install cifs-utils
 > sudo mount -t cifs //eaststorage123af4.file.core.windows.net/eastfiles /mnt/eaststorage123af4 -o vers=3.0,credentials=/etc/smbcredentials/eaststorage123af4.cred,dir_mode=0777,file_mode=0777,serverino
 > ```
 
-**파일이 Azure와 VM 간에 양방향으로 공유되는지 확인**
+**验证文件是否已从 Azure 共享到 VM 或已从后者连接到前者**
 
-1. 공유가 탑재되었으므로 https가 아닌 트래픽 허용 중지(CLI)
-    * **새 Azure Portal 웹 페이지** 인스턴스를 열고 Cloud Shell 시작
-    * SSH 세션이 아닌 **Azure CLI**에 명령 입력
+1. 现已安装共享 (CLI)，停止允许非 https 流量
+    * 打开**新 Azure 门户网页**实例并启动 Cloud Shell
+    * 在“Azure CLI”（不是 SSH 会话）中输入命令****
 
 ```sh
 az storage account update -n $my_storage_account --https-only true
 ```
 
-> 참고: 다음 명령을 실행하기 위해 **Linux SSH 세션**으로 돌아갑니다.
+> 注意：返回到**Linux SSH 会话**，以便执行以下命令
 
-2. Linux SSH 세션에서 탑재 디렉터리로 이동합니다.
+2. 在 Linux SSH 会话中，导航到装载目录
 
 ```sh
-# eastDebianVM SSH에서
+# 来自 eastDebianVM SSH
 cd /mnt/$my_storage_account
 ```
 
-3. Azure File Storage에서 VM으로 파일이 공유되는지 확인합니다.
+3. 查看从 Azure 文件存储共享到 VM 的文件
 
 ```sh
-# 공유된 파일을 확인합니다.
+# 查看共享文件
 ls
 ```
 
-4. VM에서 새 파일을 추가합니다.
+4. 从 VM 添加新文件
 
 ```sh
-# VM에서 새 파일을 만듭니다.
-echo "eastDebianVM의 파일">newFile.txt
+# 从 VM 创建新文件
+echo "I am from eastDebianVM">newFile.txt
 ```
 
-5. `exit` SSH session
+5. `exit` SSH 会话
 
 ```sh
-# VM ssh 세션에서
+# 从 VM ssh 会话
 exit
 ```
 
-6. Azure Portal에서 파일(newFile.txt)을 표시하여 공유가 양방향으로 모두 작동하는지 확인합니다.
+6. 确认 Azure 门户中存在文件 (newFile.txt)，从而确认共享在两个方向均有效
 
-**File Storage 리소스 정리**
+**清理文件存储资源**
 
-1. 스토리지 계정을 제거합니다.
+1. 删除存储帐户
 
 ```sh
 az storage account delete -n $my_storage_account -g my_resource_group

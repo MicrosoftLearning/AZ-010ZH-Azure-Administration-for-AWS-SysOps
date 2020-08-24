@@ -44,94 +44,94 @@ lab:
 
 #### 练习 1 - 任务 1：打开 Cloud Shell
 
-**사용자 추가**
+**添加用户**
 
-1. 사용자 도메인용 변수를 만듭니다.
+1. 为用户域创建变量。
 
-> 이메일 주소 eric@contoso.com을 사용하면 명령이 `my_domain=ericcontoso.onmicrosoft.com`이 됩니다.
+> 对于 eric@contoso.com 这一电子邮件地址，该命令将为 `my_domain=ericcontoso.onmicrosoft.com`。
 >
-> * *필요한 경우 강사에게 문의하세요.*
+> * *如有需要，请咨询讲师。*
 
-2. 사용자 도메인용 변수를 편집합니다.
+2. 为用户域编辑变量。
 
 ```sh
-# 사용자 도메인용 변수 만들기
+# 为用户域创建变量
 # user@contoso.com =>  usercontoso.onmicrosoft.com
 
 my_domain=<email+service>.onmicrosoft.com
 ```
 
-**사용자 계정 만들기**
+**创建用户帐户**
 
-1. 사용자 계정 이름을 만듭니다.
+1. 创建用户帐户名
 
 ```sh
 my_user_account=AZ010@$my_domain
 ```
 
-2. 강력한 고유 암호를 만듭니다(암호 편집).
+2. 创建唯一的强密码（请编辑密码！）
 
 ```sh
-# 암호를 고유한 암호로 편집합니다. 이때 선행 "!"를 제거하지 않으면 오류가 발생합니다.
+# 将密码修改为唯一密码（删除前导“!”或错误）
 az ad user create \
     --display-name AZ010Tester \
     --password !sTR0ngP@ssWorD543%* \
     --user-principal-name $my_user_account
 ```
 
-3. 표시 이름, 암호 및 사용자 주체 이름을 기록해 둡니다.
+3. 记下显示名称、密码和 --user-principal-name
 
-**사용자 및 그룹 관리**
+**管理用户和组**
 
-1. AD 사용자 목록을 표시합니다.
+1. 列出 AD 用户。
 
 ```sh
 az ad user list --output json | jq '.[] | {"userPrincipalName":.userPrincipalName, "objectId":.objectId}'
 ```
 
-2. 이전 단계에서 만든 사용자가 나열되어야 합니다.
-3. 모든 역할 할당 목록을 표시합니다.
+2. 应列出你在先前步骤中创建的用户。
+3. 列出所有角色分配。
 
 ```sh
 az role assignment list --all -o table
 ```
 
-4. 이 목록의 초기 상태를 기록해 둡니다.
-5. 리소스 그룹용 역할 할당 목록을 표시합니다.
+4. 注意此列表的初始状态。
+5. 列出资源组的角色分配。
 
 ```sh
 az role assignment list --resource-group WestRG --output json | jq '.[] | {"principalName":.principalName, "roleDefinitionName":.roleDefinitionName, "scope":.scope}'
 ```
 
-6. 새 사용자에게 역할("소유자")을 추가합니다.
+6. 向新用户添加一个角色（“所有者”）。
 
 ```sh
 az role assignment create --role "Owner" --assignee $my_user_account --resource-group WestRG
 
-#az role assignment create --role "Owner" --assignee <할당 대상 개체 ID> --resource-group <리소스 그룹>
+#az role assignment create --role "Owner" --assignee <assignee object id> --resource-group <resource_group>
 ```
 
-**사용자 및 그룹의 변경 내용 검토**
+**查看用户和组中的更改**
 
-1. 리소스 그룹용 역할 할당 목록을 다시 표시합니다(변경 사항 확인).
+1. 重复列出资源组角色分配（注意更改之处）。
 
 ```sh
 az role assignment list --resource-group WestRG --output json | jq '.[] | {"principalName":.principalName, "roleDefinitionName":.roleDefinitionName, "scope":.scope}'
 ```
 
-2. 만든 사용자에 대한 역할 할당 목록을 표시합니다(변경 사항 확인).
+2. 列出你所创建用户的角色分配（注意更改之处）。
 
 ```sh
 az role assignment list --assignee $my_user_account -g WestRG #--output json | jq '.[] | {"principalName":.principalName, "roleDefinitionName":.roleDefinitionName, "scope":.scope}'
 ```
 
-## 작업 2 – 소프트웨어 설치를 제한하는 정책 만들기
+## 任务 2 – 创建限制软件安装的策略
 
-**소프트웨어 제한 정책 배포**
+**部署软件限制策略**
 
-> *[Github](https://github.com/Azure/azure-policy/tree/master/samples/built-in-policy/require-sqlserver-version12)에서 아래 스크립트에 사용되는 rules.json 및 parameters.json을 검토합니다.*
+> *在 [Github](https://github.com/Azure/azure-policy/tree/master/samples/built-in-policy/require-sqlserver-version12) 上查看 rules.json 和 parameters.json（在下面脚本中使用）*
 
-1. 정책 정의를 만듭니다.
+1. 创建策略定义。
 
 ```sh
 az policy definition create --name 'require-sqlserver-version12' \
@@ -142,7 +142,7 @@ az policy definition create --name 'require-sqlserver-version12' \
     --mode All
 ```
 
-2. 구독 수준에서 범위를 지정합니다.
+2. 订阅级别的范围。
 
 ```sh
 az policy assignment create --name SQL12AZ010 \
@@ -151,36 +151,36 @@ az policy assignment create --name SQL12AZ010 \
     --policy 'require-sqlserver-version12'
 ```
 
-3. 정책 할당 목록을 표시합니다.
+3. 列出角色分配。
 
 ```sh
-az policy assignment list
+az 策略分配列表
 ```
 
-4. 새로 만든 정책을 표시합니다.
+4. 显示你新创建的策略。
 
 ```sh
 az policy assignment show --name 'SQL12AZ010'
 ```
 
-**규정 준수 여부 확인**
+**检查“合规性”**
 
-1. Azure Policy 서비스 페이지로 돌아갑니다.
-2. 규정 준수를 선택합니다. 규정 준수 상태 필터를 "모든 준수 상태"로 설정합니다.
-3. 정책 및 정의 상태를 검토합니다.
-## 연습 2: 쿼리 탐색기를 통해 로그 및 경고 모니터링
+1. 返回到 Azure 策略服务页面。
+2. 选择“合规性”。并将合规状态过滤器设置为“所有合规状态”
+3. 查看策略状态和定义。
+## 练习 2：使用查询资源管理器监视日志和警报
 
-1. 로그 및 경고 모니터링
+1. 监视日志和警报
 
-### 연습 2 - 작업 1 – 모니터링 로그 및 경고 검토
+### 练习 2 - 任务 1 - 查看监视日志和警报
 
-**데모 환경 액세스**
+**访问演示环境**
 
-1. 새 브라우저 탭에서 [로그 분석 쿼리 데모](https://portal.loganalytics.io/demo)로 이동합니다.
-2. 쿼리 탐색기 사용
-    1. 오른쪽 위의 쿼리 탐색기를 선택합니다.
-    2. 즐겨찾기를 확장한 다음 *오류가 있는 모든 Syslog 레코드*를 선택합니다.
-    3. 쿼리가 편집 창에 추가됩니다. 쿼리의 구조를 확인합니다.
-    4. 쿼리를 실행합니다. 반환된 레코드를 살펴봅니다.
-    5. 강사의 추가 단계를 따릅니다.
-    6. 시간이 되면 다른 즐겨찾기와 저장된 쿼리도 사용해 봅니다.
+1. 在新的浏览器选项卡中导航到 [Log Analytics 查询演示](https://portal.loganalytics.io/demo)。
+2. 使用查询资源管理器
+    1. 选择查询浏览器（右上方）。
+    2. 展开收藏夹，然后选择“所有有错误的 Syslog 记录”**。
+    3. 注意，查询已添加到编辑窗格中。注意查询的结构。
+    4. 运行查询。浏览返回的记录。
+    5. 请按照讲师的其他步骤操作。
+    6. 当你有时间尝试其他“收藏夹”和“保存的查询”时。
