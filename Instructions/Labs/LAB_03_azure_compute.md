@@ -1,4 +1,4 @@
-﻿---
+---
 lab:
     title: 'Azure VM 和规模集'
     module: '模块 3：Azure 计算'
