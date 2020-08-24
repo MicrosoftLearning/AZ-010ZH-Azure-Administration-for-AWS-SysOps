@@ -1,4 +1,4 @@
-﻿---
+---
 lab:
     title: 'Azure 虚拟网络和对等互连'
     module: '模块 2：Azure 网络'
