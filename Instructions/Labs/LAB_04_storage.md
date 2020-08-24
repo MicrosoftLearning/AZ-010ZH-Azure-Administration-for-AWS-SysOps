@@ -1,4 +1,4 @@
-﻿---
+---
 lab:
     title: 'Blob、安全访问存储、服务终结点和文件存储'
     module: '模块 4：Azure 存储'
