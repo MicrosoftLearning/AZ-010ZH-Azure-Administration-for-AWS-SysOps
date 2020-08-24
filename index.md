@@ -1,7 +1,7 @@
 ﻿---
 title: 在线托管说明
 permalink: index.html
-layout: 首页
+layout: home
 ---
 
 # 内容目录
