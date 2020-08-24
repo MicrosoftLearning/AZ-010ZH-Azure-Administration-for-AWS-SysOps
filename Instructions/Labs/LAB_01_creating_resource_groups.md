@@ -1,4 +1,4 @@
-﻿---
+---
 lab:
     title: '创建资源组'
     module: '模块 1：Azure 管理'
