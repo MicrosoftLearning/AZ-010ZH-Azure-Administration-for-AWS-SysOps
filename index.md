@@ -1,5 +1,5 @@
----
-title: 在线托管说明
+﻿---
+title: 在线托管的说明
 permalink: index.html
 layout: home
 ---
@@ -12,7 +12,7 @@ layout: home
 
 | 模块 | 实验室 |
 | --- | --- |
-| 模块 01：Azure 身份识别 | [实验室 (AZ-104) 01：管理 Azure Active Directory 标识](https://aka.ms/az-010-manage-AAD-identities-chs) |
+| 模块 01：Azure 标识 | [实验室 (AZ-104) 01：管理 Azure Active Directory 标识](https://aka.ms/az-010-manage-AAD-identities-chs) |
 | 模块 02：Azure 管理 | [实验室 (AZ-104) 03a：使用 Azure 门户管理 Azure 资源](https://aka.ms/az-010-manage-Azure-resources-portal-chs) |
 | 模块 02：Azure 管理 | [实验室 (AZ-104) 03b：使用 ARM 模板管理 Azure 资源](https://aka.ms/az-010-manage-Azure-resources-ARM-chs) |
 | 模块 02：Azure 管理 | [实验室 (AZ-104) 03c：使用 Azure PowerShell 管理 Azure 资源](https://aka.ms/az-010-manage-Azure-resources-PowerShell-chs) |
